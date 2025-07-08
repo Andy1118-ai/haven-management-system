@@ -14,10 +14,12 @@ import { CommunicationsHub } from './components/communications/CommunicationsHub
 import { StaffManagement } from './components/staff/StaffManagement';
 import { ReportsAnalytics } from './components/reports/ReportsAnalytics';
 import { Settings } from './components/settings/Settings';
+import { ToastContainer, useToastNotifications } from './components/notifications/NotificationToast';
 import { mockUser } from './data/mockData';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const { toasts, removeToast } = useToastNotifications();
 
   const renderContent = () => {
     switch (activeTab) {
@@ -50,6 +52,7 @@ function App() {
 
   return (
     <ErrorBoundary>
+      <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
       <div className="flex h-screen bg-gray-50">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block">

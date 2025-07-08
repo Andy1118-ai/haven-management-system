@@ -1,6 +1,9 @@
 import React from 'react';
+import { useState } from 'react';
 import { Bell, Search, LogOut, User } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { NotificationCenter, useNotifications } from '../notifications/NotificationCenter';
+import { Badge } from '../ui/Badge';
 
 interface HeaderProps {
   user: {
@@ -11,8 +14,19 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ user }) => {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    clearAll
+  } = useNotifications();
+
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
+    <>
+      <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center space-x-4">
           <div className="relative">
@@ -26,9 +40,18 @@ export const Header: React.FC<HeaderProps> = ({ user }) => {
         </div>
         
         <div className="flex items-center space-x-4">
-          <button className="relative p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100">
+          <button 
+            className="relative p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
+            onClick={() => setShowNotifications(!showNotifications)}
+          >
             <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+            {unreadCount > 0 && (
+              <div className="absolute -top-1 -right-1">
+                <Badge variant="danger" size="sm">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </Badge>
+              </div>
+            )}
           </button>
           
           <div className="flex items-center space-x-3">
@@ -48,6 +71,17 @@ export const Header: React.FC<HeaderProps> = ({ user }) => {
           </Button>
         </div>
       </div>
-    </header>
+      </header>
+
+      <NotificationCenter
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        notifications={notifications}
+        onMarkAsRead={markAsRead}
+        onMarkAllAsRead={markAllAsRead}
+        onDeleteNotification={deleteNotification}
+        onClearAll={clearAll}
+      />
+    </>
   );
 };
