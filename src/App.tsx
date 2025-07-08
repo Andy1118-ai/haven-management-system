@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useAuth } from './hooks/useAuth';
+import { LoginForm } from './components/auth/LoginForm';
+import { LoadingSpinner } from './components/ui/LoadingSpinner';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { MobileSidebar } from './components/layout/MobileSidebar';
 import { Sidebar } from './components/layout/Sidebar';
@@ -15,11 +18,25 @@ import { StaffManagement } from './components/staff/StaffManagement';
 import { ReportsAnalytics } from './components/reports/ReportsAnalytics';
 import { Settings } from './components/settings/Settings';
 import { ToastContainer, useToastNotifications } from './components/notifications/NotificationToast';
-import { mockUser } from './data/mockData';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const { toasts, removeToast } = useToastNotifications();
+  const { user, profile, loading, isAuthenticated } = useAuth();
+
+  // Show loading spinner while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <LoadingSpinner size="lg" text="Loading..." />
+      </div>
+    );
+  }
+
+  // Show login form if not authenticated
+  if (!isAuthenticated) {
+    return <LoginForm />;
+  }
 
   const renderContent = () => {
     switch (activeTab) {
@@ -63,7 +80,7 @@ function App() {
         <MobileSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Header user={mockUser} />
+          <Header />
           <main className="flex-1 overflow-y-auto p-4 lg:p-6">
             {renderContent()}
           </main>

@@ -5,20 +5,33 @@ import { Input } from '../ui/Input';
 import { Badge } from '../ui/Badge';
 import { PatientForm } from './PatientForm';
 import { LoadingOverlay } from '../ui/LoadingSpinner';
+import { usePatients } from '../../hooks/usePatients';
+import { useToastNotifications } from '../notifications/NotificationToast';
 import { formatKES } from '../../utils/currency';
-import { mockPatients } from '../../data/mockData';
-import { Patient } from '../../types';
+import { Database } from '../../types/database';
 import { Search, Plus, Eye, Edit, Phone, Mail, Calendar } from 'lucide-react';
+
+type Patient = Database['public']['Tables']['patients']['Row'];
 
 export const PatientList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  
+  const { 
+    patients, 
+    loading, 
+    error, 
+    createPatient, 
+    updatePatient, 
+    searchPatients 
+  } = usePatients();
+  
+  const { showSuccess, showError } = useToastNotifications();
 
-  const filteredPatients = mockPatients.filter(patient =>
-    `${patient.firstName} ${patient.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredPatients = patients.filter(patient =>
+    `${patient.first_name} ${patient.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
     patient.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -41,12 +54,52 @@ export const PatientList: React.FC = () => {
     setShowForm(true);
   };
 
-  const handleSavePatient = async (patientData: Partial<Patient>) => {
-    setIsLoading(true);
+  const handleSavePatient = async (patientData: any) => {
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Saving patient:', patientData);
+      let result;
+      
+      if (editingPatient) {
+        result = await updatePatient(editingPatient.id, patientData);
+      } else {
+        result = await createPatient(patientData);
+      }
+      
+      if (result.success) {
+        showSuccess(
+          editingPatient ? 'Patient Updated' : 'Patient Created',
+          `Patient ${patientData.first_name} ${patientData.last_name} has been ${editingPatient ? 'updated' : 'created'} successfully.`
+        );
+        setShowForm(false);
+        setEditingPatient(null);
+      } else {
+        showError('Error', result.error || 'Failed to save patient');
+      }
+    } catch (error) {
+      console.error('Error saving patient:', error);
+      showError('Error', 'An unexpected error occurred while saving the patient');
+    }
+  };
+
+  const handleSearch = async (term: string) => {
+    setSearchTerm(term);
+    if (term.trim()) {
+      await searchPatients(term);
+    }
+  };
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900">Patients</h1>
+        </div>
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <p className="text-red-600">Error loading patients: {error}</p>
+        </div>
+      </div>
+    );
+  }
       setShowForm(false);
       setEditingPatient(null);
     } catch (error) {
@@ -73,14 +126,14 @@ export const PatientList: React.FC = () => {
           patient={editingPatient}
           onSave={handleSavePatient}
           onCancel={handleCancelForm}
-          isLoading={isLoading}
+          isLoading={loading}
         />
       </div>
     );
   }
 
   return (
-    <LoadingOverlay isLoading={isLoading}>
+    <LoadingOverlay isLoading={loading}>
       <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Patients</h1>
@@ -93,7 +146,7 @@ export const PatientList: React.FC = () => {
             icon={Search}
             placeholder="Search patients by name or email..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
         <Button variant="outline">Filter</Button>
@@ -121,7 +174,7 @@ export const PatientList: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-medium text-gray-900">
-                        {patient.firstName} {patient.lastName}
+                        {patient.first_name} {patient.last_name}
                       </h3>
                       <p className="text-sm text-gray-500">{patient.email}</p>
                     </div>
@@ -130,7 +183,7 @@ export const PatientList: React.FC = () => {
                         {patient.status}
                       </Badge>
                       <p className="text-xs text-gray-500">
-                        DOB: {new Date(patient.dateOfBirth).toLocaleDateString()}
+                        DOB: {new Date(patient.date_of_birth).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
@@ -151,7 +204,7 @@ export const PatientList: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-xl font-bold text-gray-900">
-                      {selectedPatient.firstName} {selectedPatient.lastName}
+                      {selectedPatient.first_name} {selectedPatient.last_name}
                     </h2>
                     <p className="text-gray-600">{selectedPatient.email}</p>
                   </div>
@@ -193,8 +246,8 @@ export const PatientList: React.FC = () => {
                     Address
                   </label>
                   <p className="text-sm text-gray-600">
-                    {selectedPatient.address.street}<br />
-                    {selectedPatient.address.city}, {selectedPatient.address.state} {selectedPatient.address.zipCode}
+                    {selectedPatient.street}<br />
+                    {selectedPatient.city}, {selectedPatient.state} {selectedPatient.zip_code}
                   </p>
                 </div>
 
@@ -203,9 +256,9 @@ export const PatientList: React.FC = () => {
                     Emergency Contact
                   </label>
                   <p className="text-sm text-gray-600">
-                    {selectedPatient.emergencyContact.name} ({selectedPatient.emergencyContact.relationship})
+                    {selectedPatient.emergency_name} ({selectedPatient.emergency_relationship})
                     <br />
-                    {selectedPatient.emergencyContact.phone}
+                    {selectedPatient.emergency_phone}
                   </p>
                 </div>
 
@@ -214,9 +267,9 @@ export const PatientList: React.FC = () => {
                     Insurance
                   </label>
                   <p className="text-sm text-gray-600">
-                    {selectedPatient.insurance.provider}<br />
-                    Policy: {selectedPatient.insurance.policyNumber}<br />
-                    Copay: {formatKES(selectedPatient.insurance.copay)}
+                    {selectedPatient.insurance_provider}<br />
+                    Policy: {selectedPatient.policy_number}<br />
+                    Copay: {formatKES(selectedPatient.copay)}
                   </p>
                 </div>
 
@@ -225,11 +278,11 @@ export const PatientList: React.FC = () => {
                     Medical History
                   </label>
                   <div className="space-y-2">
-                    {selectedPatient.medicalHistory.conditions.length > 0 && (
+                    {selectedPatient.conditions.length > 0 && (
                       <div>
                         <p className="text-xs font-medium text-gray-700">Conditions:</p>
                         <div className="flex flex-wrap gap-1">
-                          {selectedPatient.medicalHistory.conditions.map((condition, index) => (
+                          {selectedPatient.conditions.map((condition, index) => (
                             <Badge key={index} variant="info" size="sm">
                               {condition}
                             </Badge>
@@ -237,11 +290,11 @@ export const PatientList: React.FC = () => {
                         </div>
                       </div>
                     )}
-                    {selectedPatient.medicalHistory.medications.length > 0 && (
+                    {selectedPatient.medications.length > 0 && (
                       <div>
                         <p className="text-xs font-medium text-gray-700">Medications:</p>
                         <div className="flex flex-wrap gap-1">
-                          {selectedPatient.medicalHistory.medications.map((medication, index) => (
+                          {selectedPatient.medications.map((medication, index) => (
                             <Badge key={index} variant="warning" size="sm">
                               {medication}
                             </Badge>

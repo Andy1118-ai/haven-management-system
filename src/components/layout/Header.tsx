@@ -2,19 +2,22 @@ import React from 'react';
 import { useState } from 'react';
 import { Bell, Search, LogOut, User } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { NotificationCenter, useNotifications } from '../notifications/NotificationCenter';
+import { NotificationCenter } from '../notifications/NotificationCenter';
+import { useNotifications } from '../../hooks/useNotifications';
 import { Badge } from '../ui/Badge';
+import { useAuth } from '../../hooks/useAuth';
 
 interface HeaderProps {
-  user: {
+  user?: {
     firstName: string;
     lastName: string;
     role: string;
   };
 }
 
-export const Header: React.FC<HeaderProps> = ({ user }) => {
+export const Header: React.FC<HeaderProps> = ({ user: propUser }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const { profile, signOut } = useAuth();
   const {
     notifications,
     unreadCount,
@@ -23,6 +26,12 @@ export const Header: React.FC<HeaderProps> = ({ user }) => {
     deleteNotification,
     clearAll
   } = useNotifications();
+
+  const user = propUser || (profile ? {
+    firstName: profile.first_name,
+    lastName: profile.last_name,
+    role: profile.role
+  } : null);
 
   return (
     <>
@@ -56,17 +65,21 @@ export const Header: React.FC<HeaderProps> = ({ user }) => {
           
           <div className="flex items-center space-x-3">
             <div className="text-right">
-              <p className="text-sm font-medium text-gray-900">
-                {user.firstName} {user.lastName}
-              </p>
-              <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+              {user && (
+                <>
+                  <p className="text-sm font-medium text-gray-900">
+                    {user.firstName} {user.lastName}
+                  </p>
+                  <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                </>
+              )}
             </div>
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
               <User className="w-5 h-5 text-white" />
             </div>
           </div>
           
-          <Button variant="ghost" size="sm" icon={LogOut}>
+          <Button variant="ghost" size="sm" icon={LogOut} onClick={signOut}>
             Logout
           </Button>
         </div>

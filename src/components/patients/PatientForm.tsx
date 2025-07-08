@@ -4,12 +4,15 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { FormErrors, validateForm, validationPatterns, ValidationError } from '../ui/FormValidation';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
-import { Patient } from '../../types';
+import { Database } from '../../types/database';
 import { Save, X } from 'lucide-react';
+
+type Patient = Database['public']['Tables']['patients']['Row'];
+type PatientInsert = Database['public']['Tables']['patients']['Insert'];
 
 interface PatientFormProps {
   patient?: Patient;
-  onSave: (patient: Partial<Patient>) => Promise<void>;
+  onSave: (patient: PatientInsert) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
 }
@@ -21,26 +24,26 @@ export const PatientForm: React.FC<PatientFormProps> = ({
   isLoading = false
 }) => {
   const [formData, setFormData] = useState({
-    firstName: patient?.firstName || '',
-    lastName: patient?.lastName || '',
-    dateOfBirth: patient?.dateOfBirth || '',
+    firstName: patient?.first_name || '',
+    lastName: patient?.last_name || '',
+    dateOfBirth: patient?.date_of_birth || '',
     gender: patient?.gender || 'prefer-not-to-say',
     phone: patient?.phone || '',
     email: patient?.email || '',
-    street: patient?.address?.street || '',
-    city: patient?.address?.city || '',
-    state: patient?.address?.state || '',
-    zipCode: patient?.address?.zipCode || '',
-    emergencyName: patient?.emergencyContact?.name || '',
-    emergencyRelationship: patient?.emergencyContact?.relationship || '',
-    emergencyPhone: patient?.emergencyContact?.phone || '',
-    insuranceProvider: patient?.insurance?.provider || '',
-    policyNumber: patient?.insurance?.policyNumber || '',
-    groupNumber: patient?.insurance?.groupNumber || '',
-    copay: patient?.insurance?.copay?.toString() || '',
-    conditions: patient?.medicalHistory?.conditions?.join(', ') || '',
-    medications: patient?.medicalHistory?.medications?.join(', ') || '',
-    allergies: patient?.medicalHistory?.allergies?.join(', ') || '',
+    street: patient?.street || '',
+    city: patient?.city || '',
+    state: patient?.state || '',
+    zipCode: patient?.zip_code || '',
+    emergencyName: patient?.emergency_name || '',
+    emergencyRelationship: patient?.emergency_relationship || '',
+    emergencyPhone: patient?.emergency_phone || '',
+    insuranceProvider: patient?.insurance_provider || '',
+    policyNumber: patient?.policy_number || '',
+    groupNumber: patient?.group_number || '',
+    copay: patient?.copay?.toString() || '',
+    conditions: patient?.conditions?.join(', ') || '',
+    medications: patient?.medications?.join(', ') || '',
+    allergies: patient?.allergies?.join(', ') || '',
   });
 
   const [errors, setErrors] = useState<ValidationError[]>([]);
@@ -121,36 +124,28 @@ export const PatientForm: React.FC<PatientFormProps> = ({
     }
 
     try {
-      const patientData: Partial<Patient> = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        dateOfBirth: formData.dateOfBirth,
-        gender: formData.gender as Patient['gender'],
+      const patientData: PatientInsert = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        date_of_birth: formData.dateOfBirth,
+        gender: formData.gender as any,
         phone: formData.phone,
         email: formData.email,
-        address: {
-          street: formData.street,
-          city: formData.city,
-          state: formData.state,
-          zipCode: formData.zipCode,
-        },
-        emergencyContact: {
-          name: formData.emergencyName,
-          relationship: formData.emergencyRelationship,
-          phone: formData.emergencyPhone,
-        },
-        insurance: {
-          provider: formData.insuranceProvider,
-          policyNumber: formData.policyNumber,
-          groupNumber: formData.groupNumber,
-          copay: parseFloat(formData.copay),
-        },
-        medicalHistory: {
-          conditions: formData.conditions.split(',').map(c => c.trim()).filter(Boolean),
-          medications: formData.medications.split(',').map(m => m.trim()).filter(Boolean),
-          allergies: formData.allergies.split(',').map(a => a.trim()).filter(Boolean),
-          previousTherapy: false,
-        },
+        street: formData.street,
+        city: formData.city,
+        state: formData.state,
+        zip_code: formData.zipCode,
+        emergency_name: formData.emergencyName,
+        emergency_relationship: formData.emergencyRelationship,
+        emergency_phone: formData.emergencyPhone,
+        insurance_provider: formData.insuranceProvider,
+        policy_number: formData.policyNumber,
+        group_number: formData.groupNumber,
+        copay: parseFloat(formData.copay),
+        conditions: formData.conditions.split(',').map(c => c.trim()).filter(Boolean),
+        medications: formData.medications.split(',').map(m => m.trim()).filter(Boolean),
+        allergies: formData.allergies.split(',').map(a => a.trim()).filter(Boolean),
+        previous_therapy: false,
       };
 
       await onSave(patientData);
