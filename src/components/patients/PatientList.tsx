@@ -100,14 +100,6 @@ export const PatientList: React.FC = () => {
       </div>
     );
   }
-      setShowForm(false);
-      setEditingPatient(null);
-    } catch (error) {
-      console.error('Error saving patient:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleCancelForm = () => {
     setShowForm(false);
