@@ -70,9 +70,9 @@ export const Dashboard: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl font-heading font-bold text-gray-900 animate-slide-in-left">Dashboard</h1>
         <div className="text-sm text-gray-500">
           Last updated: {new Date().toLocaleString()}
         </div>
@@ -83,16 +83,16 @@ export const Dashboard: React.FC = () => {
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <Card key={index} className="hover:shadow-md transition-shadow">
+            <Card key={index} className="hover:shadow-md transition-all duration-300 hover-lift flip-card animate-stagger-reveal" style={{ animationDelay: `${index * 0.1}s` }}>
               <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flip-card-inner">
                   <div>
-                    <p className="text-sm text-gray-600">{stat.title}</p>
-                    <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                    <p className="text-sm text-green-600">{stat.change} from last month</p>
+                    <p className="text-sm text-gray-600 font-body">{stat.title}</p>
+                    <p className="text-2xl font-heading font-bold text-gray-900">{stat.value}</p>
+                    <p className="text-sm text-accent-sky-dark">{stat.change} from last month</p>
                   </div>
-                  <div className={`p-3 rounded-full bg-gray-100 ${stat.color}`}>
-                    <Icon className="w-6 h-6" />
+                  <div className={`p-3 rounded-full bg-primary-sage/10 ${stat.color} animate-float`}>
+                    <Icon className="w-6 h-6 transition-transform duration-300 hover:scale-110" />
                   </div>
                 </div>
               </CardContent>
@@ -103,23 +103,23 @@ export const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Today's Appointments */}
-        <Card>
+        <Card className="animate-slide-in-left animate-delay-200">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Calendar className="w-5 h-5 mr-2" />
+              <Calendar className="w-5 h-5 mr-2 text-primary-sage" />
               Today's Appointments
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {upcomingAppointments.map((appointment, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={index} className="flex items-center justify-between p-3 bg-primary-sage/5 rounded-lg hover-lift transition-all duration-300 animate-stagger-reveal" style={{ animationDelay: `${(index + 2) * 0.1}s` }}>
                   <div className="flex items-center space-x-3">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-heading font-medium text-gray-900">
                       {appointment.time}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-body font-medium text-gray-900">
                         {appointment.patient}
                       </p>
                       <p className="text-xs text-gray-500">{appointment.type}</p>
@@ -135,21 +135,21 @@ export const Dashboard: React.FC = () => {
         </Card>
 
         {/* Recent Activity */}
-        <Card>
+        <Card className="animate-slide-in-right animate-delay-300">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Clock className="w-5 h-5 mr-2" />
+              <Clock className="w-5 h-5 mr-2 text-accent-sky" />
               Recent Activity
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {recentActivity.map((activity, index) => (
-                <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                <div key={index} className="flex items-start space-x-3 p-3 bg-accent-sky/5 rounded-lg hover-lift transition-all duration-300 animate-stagger-reveal" style={{ animationDelay: `${(index + 4) * 0.1}s` }}>
+                  <div className="w-2 h-2 bg-accent-sky rounded-full mt-2 animate-pulse-gentle"></div>
                   <div className="flex-1">
-                    <p className="text-sm text-gray-900">{activity.action}</p>
-                    <p className="text-sm font-medium text-gray-700">{activity.patient}</p>
+                    <p className="text-sm font-body text-gray-900">{activity.action}</p>
+                    <p className="text-sm font-heading font-medium text-gray-700">{activity.patient}</p>
                     <p className="text-xs text-gray-500">{activity.time}</p>
                   </div>
                 </div>
@@ -160,38 +160,38 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Alerts and Notifications */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="border-l-4 border-l-red-500">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-in-up animate-delay-500">
+        <Card className="border-l-4 border-l-red-500 hover-glow">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <AlertTriangle className="w-5 h-5 text-red-500" />
+              <AlertTriangle className="w-5 h-5 text-red-500 animate-pulse-gentle" />
               <div>
-                <h3 className="font-medium text-gray-900">Overdue Payments</h3>
-                <p className="text-sm text-gray-600">3 patients have overdue payments</p>
+                <h3 className="font-heading font-medium text-gray-900">Overdue Payments</h3>
+                <p className="text-sm font-body text-gray-600">3 patients have overdue payments</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-yellow-500">
+        <Card className="border-l-4 border-l-yellow-500 hover-glow animate-delay-100">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Clock className="w-5 h-5 text-yellow-500" />
+              <Clock className="w-5 h-5 text-yellow-500 animate-pulse-gentle" />
               <div>
-                <h3 className="font-medium text-gray-900">License Renewals</h3>
-                <p className="text-sm text-gray-600">2 licenses expire in 30 days</p>
+                <h3 className="font-heading font-medium text-gray-900">License Renewals</h3>
+                <p className="text-sm font-body text-gray-600">2 licenses expire in 30 days</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-green-500">
+        <Card className="border-l-4 border-l-green-500 hover-glow animate-delay-200">
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <CheckCircle className="w-5 h-5 text-green-500" />
+              <CheckCircle className="w-5 h-5 text-green-500 animate-pulse-gentle" />
               <div>
-                <h3 className="font-medium text-gray-900">Insurance Claims</h3>
-                <p className="text-sm text-gray-600">8 claims approved this week</p>
+                <h3 className="font-heading font-medium text-gray-900">Insurance Claims</h3>
+                <p className="text-sm font-body text-gray-600">8 claims approved this week</p>
               </div>
             </div>
           </CardContent>

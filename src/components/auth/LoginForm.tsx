@@ -49,30 +49,30 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-sage-sky px-4 parallax-container">
+      <Card className="w-full max-w-md animate-fade-in glass-morphism">
         <CardHeader className="text-center">
-          <div className="flex items-center justify-center mb-4">
-            <div className="p-3 bg-blue-600 rounded-full">
-              <Shield className="w-8 h-8 text-white" />
+          <div className="flex items-center justify-center mb-4 animate-float">
+            <div className="p-3 bg-primary-sage rounded-full shadow-lg">
+              <Shield className="w-8 h-8 text-white animate-pulse-gentle" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">
+          <CardTitle className="text-2xl font-heading font-bold text-gray-900 animate-slide-in-up">
             TherapyPro Login
           </CardTitle>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 mt-2 font-body animate-slide-in-up animate-delay-100">
             Sign in to your therapy practice management system
           </p>
         </CardHeader>
 
         <CardContent>
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-600">{error}</p>
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md animate-slide-in-left">
+              <p className="text-sm text-red-600 font-body">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 animate-slide-in-up animate-delay-200">
             <Input
               label="Email Address"
               type="email"
@@ -96,7 +96,7 @@ export const LoginForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-8 text-gray-400 hover:text-primary-sage transition-colors duration-300"
                 disabled={isLoading}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -105,7 +105,7 @@ export const LoginForm: React.FC = () => {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full animate-pulse-gentle"
               disabled={isLoading || !formData.email || !formData.password}
             >
               {isLoading ? (
@@ -117,12 +117,12 @@ export const LoginForm: React.FC = () => {
           </form>
 
           {/* Demo credentials section */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Demo Credentials</h4>
-            <p className="text-xs text-gray-600 mb-3">
+          <div className="mt-6 p-4 bg-primary-sage/5 rounded-lg animate-slide-in-up animate-delay-300">
+            <h4 className="text-sm font-heading font-medium text-gray-700 mb-2">Demo Credentials</h4>
+            <p className="text-xs text-gray-600 mb-3 font-body">
               Use these credentials to test the application:
             </p>
-            <div className="space-y-1 text-xs text-gray-600 mb-3">
+            <div className="space-y-1 text-xs text-gray-600 mb-3 font-body">
               <p><strong>Email:</strong> vicky.kedemi@practice.com</p>
               <p><strong>Password:</strong> demo123456</p>
             </div>
@@ -131,15 +131,15 @@ export const LoginForm: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={fillDemoCredentials}
-              className="w-full"
+              className="w-full hover-scale"
               disabled={isLoading}
             >
               Fill Demo Credentials
             </Button>
           </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-xs text-gray-500">
+          <div className="mt-6 text-center animate-fade-in animate-delay-400">
+            <p className="text-xs text-gray-500 font-body">
               Secure healthcare practice management system
             </p>
           </div>

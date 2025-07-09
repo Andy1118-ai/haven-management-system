@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import React, { useState } from 'react';
 import { useAuth } from './hooks/useAuth';
 import { LoginForm } from './components/auth/LoginForm';
@@ -24,10 +25,49 @@ function App() {
   const { toasts, removeToast } = useToastNotifications();
   const { user, profile, loading, isAuthenticated } = useAuth();
 
+  // Intersection Observer for fade-in animations
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all fade-in sections
+    const fadeElements = document.querySelectorAll('.fade-in-section');
+    fadeElements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [activeTab]);
+
+  // Parallax effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.pageYOffset;
+      const parallaxElements = document.querySelectorAll('.parallax-element');
+      
+      parallaxElements.forEach(element => {
+        const speed = element.getAttribute('data-speed') || 0.5;
+        const yPos = -(scrolled * speed);
+        element.style.transform = `translateY(${yPos}px)`;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Show loading spinner while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-sage-sky">
         <LoadingSpinner size="lg" text="Loading..." />
       </div>
     );
@@ -70,7 +110,7 @@ function App() {
   return (
     <ErrorBoundary>
       <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
-      <div className="flex h-screen bg-gray-50">
+      <div className="flex h-screen bg-gray-50 parallax-container">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block">
           <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
@@ -81,7 +121,7 @@ function App() {
         
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header />
-          <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+          <main className="flex-1 overflow-y-auto p-4 lg:p-6 fade-in-section">
             {renderContent()}
           </main>
         </div>

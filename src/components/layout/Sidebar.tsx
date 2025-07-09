@@ -34,20 +34,20 @@ const navigationItems = [
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
   return (
-    <div className="w-64 bg-white shadow-lg border-r border-gray-200 h-screen">
-      <div className="p-6">
+    <div className="w-64 bg-gradient-sage shadow-lg border-r border-primary-sage/20 h-screen animate-slide-in-left">
+      <div className="p-6 animate-fade-in">
         <div className="flex items-center space-x-2">
-          <Shield className="w-8 h-8 text-blue-600" />
+          <Shield className="w-8 h-8 text-white animate-float" />
           <div>
-            <h1 className="text-lg font-bold text-gray-900">TherapyPro</h1>
-            <p className="text-sm text-gray-500">Vicky Kedemi Practice</p>
+            <h1 className="text-lg font-heading font-bold text-white">TherapyPro</h1>
+            <p className="text-sm text-white/80">Vicky Kedemi Practice</p>
           </div>
         </div>
       </div>
       
-      <nav className="mt-6">
+      <nav className="mt-6 animate-stagger-reveal">
         <div className="px-3 space-y-1">
-          {navigationItems.map((item) => {
+          {navigationItems.map((item, index) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             
@@ -55,13 +55,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
               <button
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
-                className={`w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:transform hover:scale-105 animate-stagger-reveal ${
                   isActive
-                    ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-white/20 text-white border-r-2 border-white shadow-lg'
+                    : 'text-white/80 hover:bg-white/10 hover:text-white'
                 }`}
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <Icon className="w-5 h-5 mr-3" />
+                <Icon className="w-5 h-5 mr-3 transition-transform duration-300" />
                 {item.label}
               </button>
             );

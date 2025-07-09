@@ -19,7 +19,7 @@ export const Card: React.FC<CardProps> = ({
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${paddingClasses[padding]} ${className}`}>
+    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 hover-lift animate-fade-in ${paddingClasses[padding]} ${className}`}>
       {children}
     </div>
   );
@@ -29,7 +29,7 @@ export const CardHeader: React.FC<{ children: React.ReactNode; className?: strin
   children, 
   className = '' 
 }) => (
-  <div className={`border-b border-gray-200 pb-4 mb-4 ${className}`}>
+  <div className={`border-b border-primary-sage/20 pb-4 mb-4 animate-slide-in-left ${className}`}>
     {children}
   </div>
 );
@@ -38,7 +38,7 @@ export const CardTitle: React.FC<{ children: React.ReactNode; className?: string
   children, 
   className = '' 
 }) => (
-  <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>
+  <h3 className={`text-lg font-heading font-semibold text-gray-900 animate-slide-in-right ${className}`}>
     {children}
   </h3>
 );
@@ -47,7 +47,7 @@ export const CardContent: React.FC<{ children: React.ReactNode; className?: stri
   children, 
   className = '' 
 }) => (
-  <div className={className}>
+  <div className={`animate-slide-in-up ${className}`}>
     {children}
   </div>
 );

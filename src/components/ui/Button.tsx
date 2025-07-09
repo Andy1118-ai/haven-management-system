@@ -18,14 +18,14 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:transform hover:scale-105 hover:shadow-lg btn-pulse';
   
   const variants = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500',
-    outline: 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500',
-    ghost: 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:ring-gray-500',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
+    primary: 'bg-primary-sage text-white hover:bg-primary-sage-dark focus:ring-primary-sage animate-pulse-gentle',
+    secondary: 'bg-accent-sky text-white hover:bg-accent-sky-dark focus:ring-accent-sky',
+    outline: 'border border-primary-sage bg-white text-primary-sage-dark hover:bg-primary-sage hover:text-white focus:ring-primary-sage',
+    ghost: 'text-primary-sage-dark hover:text-primary-sage hover:bg-primary-sage/10 focus:ring-primary-sage',
+    danger: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500'
   };
 
   const sizes = {
@@ -41,9 +41,9 @@ export const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       {isLoading ? (
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 loading-dots" />
       ) : Icon ? (
-        <Icon className="w-4 h-4 mr-2" />
+        <Icon className="w-4 h-4 mr-2 transition-transform duration-300" />
       ) : null}
       {children}
     </button>

@@ -35,25 +35,25 @@ export const Header: React.FC<HeaderProps> = ({ user: propUser }) => {
 
   return (
     <>
-      <header className="bg-white shadow-sm border-b border-gray-200">
-      <div className="flex items-center justify-between px-6 py-4">
+      <header className="bg-white shadow-sm border-b border-primary-sage/20 animate-slide-in-up">
+      <div className="flex items-center justify-between px-6 py-4 animate-fade-in">
         <div className="flex items-center space-x-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-primary-sage transition-colors duration-300" />
             <input
               type="text"
               placeholder="Search patients, appointments..."
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-96"
+              className="pl-10 pr-4 py-2 border border-primary-sage/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-sage focus:border-primary-sage w-96 transition-all duration-300 hover:shadow-md"
             />
           </div>
         </div>
         
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 animate-slide-in-right">
           <button 
-            className="relative p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100 transition-colors"
+            className="relative p-2 text-primary-sage-dark hover:text-primary-sage rounded-full hover:bg-primary-sage/10 transition-all duration-300 hover:transform hover:scale-110"
             onClick={() => setShowNotifications(!showNotifications)}
           >
-            <Bell className="w-5 h-5" />
+            <Bell className="w-5 h-5 animate-pulse-gentle" />
             {unreadCount > 0 && (
               <div className="absolute -top-1 -right-1">
                 <Badge variant="danger" size="sm">
@@ -67,14 +67,14 @@ export const Header: React.FC<HeaderProps> = ({ user: propUser }) => {
             <div className="text-right">
               {user && (
                 <>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-gray-900 font-heading">
                     {user.firstName} {user.lastName}
                   </p>
-                  <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                  <p className="text-xs text-primary-sage-dark capitalize">{user.role}</p>
                 </>
               )}
             </div>
-            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-sage-sky rounded-full flex items-center justify-center hover:transform hover:scale-110 transition-all duration-300">
               <User className="w-5 h-5 text-white" />
             </div>
           </div>
